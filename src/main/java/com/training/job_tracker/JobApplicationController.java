@@ -14,15 +14,37 @@ public class JobApplicationController {
     @Autowired
     private JobApplicationRepository repository;
 
-    //any POST request gets sent here
+    //CREATE-any POST request gets sent here
     @PostMapping
     public JobApplication addApplication(@RequestBody JobApplication application){
         return repository.save(application);
     }
 
-    //to GET all applications in a list from the database
+    //READ- to GET all applications in a list from the database
     @GetMapping
     public List<JobApplication> getAllApplications(){
         return repository.findAll();
+    }
+
+    //UPDATE-
+    @PutMapping("/{id}")
+    public JobApplication updateApplication(@PathVariable String id, @RequestBody JobApplication updatedJob) {
+
+        //finding the existing job in database using id
+        JobApplication existingJob = repository.findById(id).orElseThrow();
+
+        //update object
+        existingJob.setLink(updatedJob.getLink());
+        existingJob.setCompanyName(updatedJob.getCompanyName());
+        existingJob.setRole(updatedJob.getRole());
+        existingJob.setStatus(updatedJob.getStatus());
+
+        return repository.save(existingJob) ;
+    }
+
+    //DELETE
+    @DeleteMapping("/{id}")
+    public void deleteApplication(@PathVariable String id){
+        repository.deleteById(id);
     }
 }
